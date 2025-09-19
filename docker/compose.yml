@@ -2,10 +2,8 @@ services:
   postgresql:
     image: postgres:17
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: jungmini
-      POSTGRES_PASSWORD: qwer1234
-      POSTGRES_DB: hh-study
+    env_file:
+      - ../.env.dev
     ports:
       - '15432:5432'
     volumes:
