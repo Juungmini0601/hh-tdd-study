@@ -1,6 +1,6 @@
 import { CreateUserUsecase } from '../../../src/application/user/create-user.usecase';
-import { UserRepository } from '../../../src/domain/user.repository';
-import { User } from '../../../src/domain/user.domain';
+import { UserRepository } from '../../../src/domain/user/user.repository';
+import { User } from '../../../src/domain/user/user.domain';
 import { DuplicateException } from '../../../src/domain/exception/exception';
 import { PasswordEncoder } from '../../../src/application/auth/password-encoder';
 
@@ -12,6 +12,8 @@ describe('CreateUserUsecase', () => {
     userRepositoryMock = {
       save: jest.fn(),
       existsByEmail: jest.fn(),
+      findByEmail: jest.fn(),
+      findByEmailOrElseThrow: jest.fn(),
     };
 
     passwordEncoderMock = {

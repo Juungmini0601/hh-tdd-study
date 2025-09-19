@@ -7,7 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ApiResponse } from '../response.dto';
-import { ERROR_CODE } from './error.code';
+import { ERROR_CODE } from '../../../../domain/exception/error.code';
 import { BaseException } from 'src/domain/exception/exception';
 
 type ExceptionHandler = (exception: unknown, response: any) => any;

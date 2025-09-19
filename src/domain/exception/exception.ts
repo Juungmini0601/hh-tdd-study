@@ -12,3 +12,15 @@ export class DuplicateException extends BaseException {
     super(message, errorCode);
   }
 }
+
+export class NotFoundException extends BaseException {
+  constructor(message: string, errorCode: string) {
+    super(message, errorCode);
+  }
+}
+
+export class PasswordMismatchException extends BaseException {
+  constructor(message: string, errorCode: string) {
+    super(message, errorCode);
+  }
+}

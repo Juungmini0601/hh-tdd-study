@@ -1,12 +1,12 @@
-import { User } from 'src/domain/user.domain';
-import { CreateUserCommand } from 'src/domain/user.dto';
+import { User } from 'src/domain/user/user.domain';
+import { CreateUserCommand } from 'src/domain/user/user.dto';
 import {
   USER_REPOSITORY,
   type UserRepository,
-} from 'src/domain/user.repository';
+} from 'src/domain/user/user.repository';
 import { DuplicateException } from 'src/domain/exception/exception';
 import { Inject, Injectable } from '@nestjs/common';
-import { ERROR_CODE } from 'src/presentation/http/common/exception/error.code';
+import { ERROR_CODE } from 'src/domain/exception/error.code';
 import {
   type PasswordEncoder,
   PASSWORD_ENCODER,
