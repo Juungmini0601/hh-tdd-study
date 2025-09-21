@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Delete,
   Put,
   Req,
   UseGuards,
@@ -14,16 +15,23 @@ import { ApiResponse as ApiResponseDto } from '../common/response.dto';
 import {
   CreatePostRequest,
   CreatePostResponse,
+  DeletePostResponse,
   GetPostResponse,
   UpdatePostRequest,
   UpdatePostResponse,
 } from './post.dto';
-import { ApiCreatePost, ApiGetPost, ApiUpdatePost } from './post.docs';
+import {
+  ApiCreatePost,
+  ApiDeletePost,
+  ApiGetPost,
+  ApiUpdatePost,
+} from './post.docs';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CreatePostUsecase } from 'src/application/post/create-post.usecase';
 import { PostCreateCommand, PostUpdateCommand } from 'src/domain/post/post.dto';
 import { GetPostUsecase } from 'src/application/post/get-post.usecase';
 import { UpdatePostUsecase } from 'src/application/post/update-post.usecase';
+import { DeletePostUsecase } from 'src/application/post/delete-post.usecase';
 
 @ApiTags('Post API')
 @Controller('posts')
@@ -32,6 +40,7 @@ export class PostController {
     private readonly createPostUsecase: CreatePostUsecase,
     private readonly getPostUsecase: GetPostUsecase,
     private readonly updatePostUsecase: UpdatePostUsecase,
+    private readonly deletePostUsecase: DeletePostUsecase,
   ) {}
 
   @Post()
@@ -92,6 +101,23 @@ export class PostController {
       authorId: updatedPost.getAuthorId(),
       createdAt: updatedPost.getCreatedAt(),
       updatedAt: updatedPost.getUpdatedAt(),
+    });
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard)
+  @ApiDeletePost()
+  async deletePost(@Param('id') id: string, @Req() req: Request) {
+    const authorId = req.user.getSub();
+    const deletedPost = await this.deletePostUsecase.execute(id, authorId);
+
+    return ApiResponseDto.success<DeletePostResponse>({
+      id: id,
+      title: deletedPost.getTitle(),
+      content: deletedPost.getContent(),
+      authorId: deletedPost.getAuthorId(),
+      createdAt: deletedPost.getCreatedAt(),
+      updatedAt: deletedPost.getUpdatedAt(),
     });
   }
 }

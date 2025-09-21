@@ -74,4 +74,8 @@ export class PostPrismaRepository implements PostRepository {
       updatedAt: updated.updatedAt,
     });
   }
+
+  async delete(id: PostId): Promise<void> {
+    await this.prismaService.post.delete({ where: { id } });
+  }
 }

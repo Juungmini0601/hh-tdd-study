@@ -11,6 +11,8 @@ describe('CreatePostUsecase', () => {
       create: jest.fn(),
       findById: jest.fn(),
       findByIdOrElseThrow: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
     };
 
     usecase = new CreatePostUsecase(postRepositoryMock);

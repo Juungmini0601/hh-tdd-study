@@ -17,6 +17,7 @@ describe('UpdatePostUsecase', () => {
       findById: jest.fn(),
       findByIdOrElseThrow: jest.fn(),
       update: jest.fn(),
+      delete: jest.fn(),
     };
 
     usecase = new UpdatePostUsecase(postRepositoryMock);
