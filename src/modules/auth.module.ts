@@ -14,6 +14,7 @@ import { LoginUsecase } from '../application/auth/login.usecase';
     ConfigModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
+      global: true,
       useFactory: (config: ConfigService) => ({
         global: true,
         secret: config.get<string>('JWT_ACCESS_SECRET'),

@@ -5,6 +5,7 @@ import {
   ExceptionFilter,
   HttpStatus,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ApiResponse } from '../response.dto';
 import { ERROR_CODE } from '../../../../domain/exception/error.code';
@@ -24,12 +25,18 @@ export class GlobalExceptionHandler implements ExceptionFilter {
 
   constructor() {
     const handlers = new Map<Function, ExceptionHandler>();
+
+    handlers.set(BaseException, this.handleBaseException.bind(this));
+
     handlers.set(
       BadRequestException,
       this.handleValidationException.bind(this), // exception handler의 this 변경
     );
 
-    handlers.set(BaseException, this.handleBaseException.bind(this));
+    handlers.set(
+      UnauthorizedException,
+      this.handleUnauthorizedException.bind(this),
+    );
 
     this.exceptionHandlers = handlers;
   }
@@ -51,6 +58,17 @@ export class GlobalExceptionHandler implements ExceptionFilter {
     }
 
     return this.handleUnknownError(exception, response);
+  }
+
+  private handleUnauthorizedException(ex: unknown, response: any) {
+    const exception = ex as UnauthorizedException;
+    const status = exception.getStatus();
+    const body = ApiResponse.error(
+      exception.message,
+      null,
+      ERROR_CODE.UNAUTHORIZED_EXCEPTION,
+    );
+    return response.status(status).json(body);
   }
 
   // BaseException
