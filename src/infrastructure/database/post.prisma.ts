@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { Post, type PostId } from 'src/domain/post/post.domain';
 import { type PostRepository } from 'src/domain/post/post.repository';
+import { NotFoundException } from 'src/domain/exception/exception';
+import { ERROR_CODE } from 'src/domain/exception/error.code';
 
 @Injectable()
 export class PostPrismaRepository implements PostRepository {
@@ -21,6 +23,19 @@ export class PostPrismaRepository implements PostRepository {
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     });
+  }
+
+  async findByIdOrElseThrow(id: PostId): Promise<Post> {
+    const post = await this.findById(id);
+
+    if (!post) {
+      throw new NotFoundException(
+        '게시글을 찾을 수 없습니다.',
+        ERROR_CODE.NOT_FOUND_EXCEPTION,
+      );
+    }
+
+    return post;
   }
 
   async create(post: Post): Promise<Post> {

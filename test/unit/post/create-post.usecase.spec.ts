@@ -1,7 +1,7 @@
 import { CreatePostUsecase } from 'src/application/post/create-post.usecase';
 import { Post } from 'src/domain/post/post.domain';
 import { PostCreateCommand } from 'src/domain/post/post.dto';
-import { PostRepository } from 'src/domain/post/post.repository';
+import { type PostRepository } from 'src/domain/post/post.repository';
 
 describe('CreatePostUsecase', () => {
   let usecase: CreatePostUsecase;
@@ -10,6 +10,7 @@ describe('CreatePostUsecase', () => {
     postRepositoryMock = {
       create: jest.fn(),
       findById: jest.fn(),
+      findByIdOrElseThrow: jest.fn(),
     };
 
     usecase = new CreatePostUsecase(postRepositoryMock);
