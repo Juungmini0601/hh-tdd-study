@@ -7,6 +7,7 @@ import { PostPrismaRepository } from '../infrastructure/database/post.prisma';
 import { AuthModule } from './auth.module';
 import { AuthGuard } from '../presentation/http/auth/guards/auth.guard';
 import { GetPostUsecase } from '../application/post/get-post.usecase';
+import { UpdatePostUsecase } from '../application/post/update-post.usecase';
 
 @Module({
   imports: [forwardRef(() => AuthModule)],
@@ -16,6 +17,7 @@ import { GetPostUsecase } from '../application/post/get-post.usecase';
     { provide: POST_REPOSITORY, useClass: PostPrismaRepository },
     CreatePostUsecase,
     GetPostUsecase,
+    UpdatePostUsecase,
     AuthGuard,
   ],
   exports: [POST_REPOSITORY],

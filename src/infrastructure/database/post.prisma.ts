@@ -58,4 +58,20 @@ export class PostPrismaRepository implements PostRepository {
       updatedAt: created.updatedAt,
     });
   }
+
+  async update(post: Post): Promise<Post> {
+    const updated = await this.prismaService.post.update({
+      where: { id: post.getId() },
+      data: { title: post.getTitle(), content: post.getContent() },
+    });
+
+    return new Post({
+      id: updated.id,
+      title: updated.title,
+      content: updated.content,
+      authorId: updated.authorId,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
+    });
+  }
 }

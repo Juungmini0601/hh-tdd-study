@@ -1,7 +1,11 @@
 import { applyDecorators } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ApiResponse as ApiResponseDto } from '../common/response.dto';
-import { CreatePostResponse, GetPostResponse } from './post.dto';
+import {
+  CreatePostResponse,
+  GetPostResponse,
+  UpdatePostResponse,
+} from './post.dto';
 
 export function ApiCreatePost() {
   return applyDecorators(
@@ -14,6 +18,20 @@ export function ApiCreatePost() {
     }),
     ApiResponse({ status: 401, description: '인증 실패' }),
     ApiResponse({ status: 400, description: '요청 값 검증 실패' }),
+  );
+}
+
+export function ApiUpdatePost() {
+  return applyDecorators(
+    ApiBearerAuth('access-token'),
+    ApiOperation({ summary: '게시글 수정', description: '게시글 수정 API' }),
+    ApiResponse({
+      status: 200,
+      description: '게시글 수정 성공',
+      type: ApiResponseDto<UpdatePostResponse>,
+    }),
+    ApiResponse({ status: 401, description: '인증 실패' }),
+    ApiResponse({ status: 403, description: '권한 없는 유저' }),
   );
 }
 

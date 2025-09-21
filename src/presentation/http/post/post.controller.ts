@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,12 +15,15 @@ import {
   CreatePostRequest,
   CreatePostResponse,
   GetPostResponse,
+  UpdatePostRequest,
+  UpdatePostResponse,
 } from './post.dto';
-import { ApiCreatePost, ApiGetPost } from './post.docs';
+import { ApiCreatePost, ApiGetPost, ApiUpdatePost } from './post.docs';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CreatePostUsecase } from 'src/application/post/create-post.usecase';
-import { PostCreateCommand } from 'src/domain/post/post.dto';
+import { PostCreateCommand, PostUpdateCommand } from 'src/domain/post/post.dto';
 import { GetPostUsecase } from 'src/application/post/get-post.usecase';
+import { UpdatePostUsecase } from 'src/application/post/update-post.usecase';
 
 @ApiTags('Post API')
 @Controller('posts')
@@ -27,6 +31,7 @@ export class PostController {
   constructor(
     private readonly createPostUsecase: CreatePostUsecase,
     private readonly getPostUsecase: GetPostUsecase,
+    private readonly updatePostUsecase: UpdatePostUsecase,
   ) {}
 
   @Post()
@@ -59,6 +64,34 @@ export class PostController {
       authorId: post.getAuthorId(),
       createdAt: post.getCreatedAt(),
       updatedAt: post.getUpdatedAt(),
+    });
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard)
+  @ApiUpdatePost()
+  async updatePost(
+    @Param('id') id: string,
+    @Req() req: Request,
+    @Body() request: UpdatePostRequest,
+  ) {
+    const authorId = req.user.getSub();
+    const command: PostUpdateCommand = {
+      id: id,
+      title: request.title,
+      content: request.content,
+      authorId: authorId,
+    };
+
+    const updatedPost = await this.updatePostUsecase.execute(command);
+
+    return ApiResponseDto.success<UpdatePostResponse>({
+      id: updatedPost.getId() as string,
+      title: updatedPost.getTitle(),
+      content: updatedPost.getContent(),
+      authorId: updatedPost.getAuthorId(),
+      createdAt: updatedPost.getCreatedAt(),
+      updatedAt: updatedPost.getUpdatedAt(),
     });
   }
 }
