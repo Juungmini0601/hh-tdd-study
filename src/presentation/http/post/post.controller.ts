@@ -8,6 +8,7 @@ import {
   Put,
   Req,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ApiTags } from '@nestjs/swagger';
@@ -17,6 +18,8 @@ import {
   CreatePostResponse,
   DeletePostResponse,
   GetPostResponse,
+  GetPostsRequest,
+  GetPostsResponse,
   UpdatePostRequest,
   UpdatePostResponse,
 } from './post.dto';
@@ -24,14 +27,20 @@ import {
   ApiCreatePost,
   ApiDeletePost,
   ApiGetPost,
+  ApiGetPosts,
   ApiUpdatePost,
 } from './post.docs';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { CreatePostUsecase } from 'src/application/post/create-post.usecase';
-import { PostCreateCommand, PostUpdateCommand } from 'src/domain/post/post.dto';
+import {
+  PostCreateCommand,
+  PostFindManyCommand,
+  PostUpdateCommand,
+} from 'src/domain/post/post.dto';
 import { GetPostUsecase } from 'src/application/post/get-post.usecase';
 import { UpdatePostUsecase } from 'src/application/post/update-post.usecase';
 import { DeletePostUsecase } from 'src/application/post/delete-post.usecase';
+import { GetPostsUsecase } from 'src/application/post/get-posts.usecase';
 
 @ApiTags('Post API')
 @Controller('posts')
@@ -39,6 +48,7 @@ export class PostController {
   constructor(
     private readonly createPostUsecase: CreatePostUsecase,
     private readonly getPostUsecase: GetPostUsecase,
+    private readonly getPostsUsecase: GetPostsUsecase,
     private readonly updatePostUsecase: UpdatePostUsecase,
     private readonly deletePostUsecase: DeletePostUsecase,
   ) {}
@@ -59,6 +69,28 @@ export class PostController {
       title: createdPost.getTitle(),
       content: createdPost.getContent(),
       authorId: createdPost.getAuthorId(),
+    });
+  }
+
+  @Get()
+  @ApiGetPosts()
+  async getPosts(@Query() request: GetPostsRequest) {
+    const command: PostFindManyCommand = {
+      cursor: request.cursor,
+      limit: request.limit,
+    };
+
+    const posts = await this.getPostsUsecase.execute(command);
+
+    return ApiResponseDto.success<GetPostsResponse>({
+      posts: posts.map((post) => ({
+        id: post.getId() as string,
+        title: post.getTitle(),
+        content: post.getContent(),
+        authorId: post.getAuthorId(),
+        createdAt: post.getCreatedAt(),
+        updatedAt: post.getUpdatedAt(),
+      })),
     });
   }
 

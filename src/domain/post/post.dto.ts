@@ -13,3 +13,8 @@ export class PostUpdateCommand {
   content: string;
   authorId: UserId;
 }
+
+export class PostFindManyCommand {
+  cursor?: string;
+  limit?: number;
+}

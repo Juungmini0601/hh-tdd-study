@@ -5,6 +5,7 @@ import {
   CreatePostResponse,
   DeletePostResponse,
   GetPostResponse,
+  GetPostsResponse,
   UpdatePostResponse,
 } from './post.dto';
 
@@ -62,5 +63,19 @@ export function ApiGetPost() {
       type: ApiResponseDto<GetPostResponse>,
     }),
     ApiResponse({ status: 400, description: '요청 값 검증 실패' }),
+  );
+}
+
+export function ApiGetPosts() {
+  return applyDecorators(
+    ApiOperation({
+      summary: '게시글 목록 조회',
+      description: '게시글 목록 조회 API',
+    }),
+    ApiResponse({
+      status: 200,
+      description: '게시글 목록 조회 성공',
+      type: ApiResponseDto<GetPostsResponse>,
+    }),
   );
 }

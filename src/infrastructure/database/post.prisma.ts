@@ -4,6 +4,7 @@ import { Post, type PostId } from 'src/domain/post/post.domain';
 import { type PostRepository } from 'src/domain/post/post.repository';
 import { NotFoundException } from 'src/domain/exception/exception';
 import { ERROR_CODE } from 'src/domain/exception/error.code';
+import { PostFindManyCommand } from 'src/domain/post/post.dto';
 
 @Injectable()
 export class PostPrismaRepository implements PostRepository {
@@ -36,6 +37,34 @@ export class PostPrismaRepository implements PostRepository {
     }
 
     return post;
+  }
+
+  async findMany(command: PostFindManyCommand): Promise<Post[]> {
+    const posts = await this.prismaService.post.findMany({
+      where: command.cursor
+        ? {
+            createdAt: {
+              lt: command.cursor,
+            },
+          }
+        : undefined,
+      take: command.limit ?? 10,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return posts.map(
+      (post) =>
+        new Post({
+          id: post.id,
+          title: post.title,
+          content: post.content,
+          authorId: post.authorId,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+        }),
+    );
   }
 
   async create(post: Post): Promise<Post> {

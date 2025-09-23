@@ -1,5 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, Length } from 'class-validator';
+import { IsNotEmpty, Length, IsOptional, IsString, IsNumber } from 'class-validator';
+
+export class GetPostsRequest {
+  @ApiProperty({ description: '커서', required: false })
+  @IsOptional()
+  @IsString()
+  cursor?: string;
+
+  @ApiProperty({ description: '개수', required: false, default: 10 })
+  @IsOptional()
+  @IsNumber()
+  limit?: number;
+}
 
 export class CreatePostRequest {
   @ApiProperty({ description: '게시글 제목', example: '첫 번째 게시글' })
@@ -128,4 +140,9 @@ export class GetPostResponse {
     example: '2025-01-01T00:00:00.000Z',
   })
   updatedAt: Date;
+}
+
+export class GetPostsResponse {
+  @ApiProperty({ type: [GetPostResponse] })
+  posts: GetPostResponse[];
 }

@@ -9,6 +9,7 @@ import { AuthGuard } from '../presentation/http/auth/guards/auth.guard';
 import { GetPostUsecase } from '../application/post/get-post.usecase';
 import { UpdatePostUsecase } from '../application/post/update-post.usecase';
 import { DeletePostUsecase } from '../application/post/delete-post.usecase';
+import { GetPostsUsecase } from '../application/post/get-posts.usecase';
 
 @Module({
   imports: [forwardRef(() => AuthModule)],
@@ -18,6 +19,7 @@ import { DeletePostUsecase } from '../application/post/delete-post.usecase';
     { provide: POST_REPOSITORY, useClass: PostPrismaRepository },
     CreatePostUsecase,
     GetPostUsecase,
+    GetPostsUsecase,
     UpdatePostUsecase,
     DeletePostUsecase,
     AuthGuard,
