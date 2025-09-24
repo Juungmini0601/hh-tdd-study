@@ -8,7 +8,7 @@ import { PostModule } from './post.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env.dev', '.env'],
+      envFilePath: process.env.NODE_ENV === 'test' ? '.env.test' : '.env.dev',
     }),
     UserModule,
     AuthModule,

@@ -21,7 +21,12 @@ export class UserController {
 
   @Get('/me')
   @UseGuards(AuthGuard)
-  async getUser(@Req() req: Request) {
+  getUser(@Req() req: Request) {
     return ApiResponseDto.success({ me: req.user });
+  }
+
+  @Get('/hello')
+  hello() {
+    return 'hello';
   }
 }

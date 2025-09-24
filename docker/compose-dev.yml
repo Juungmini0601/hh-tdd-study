@@ -1,0 +1,16 @@
+services:
+  postgresql:
+    image: postgres:17
+    restart: unless-stopped
+    env_file:
+      - ../.env.test
+    ports:
+      - '25432:5432'
+    volumes:
+      - ./data/test-postgresql:/var/lib/postgresql/data
+    networks:
+      - hh-study
+
+networks:
+  hh-study:
+    driver: bridge
